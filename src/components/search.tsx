@@ -1,10 +1,9 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {Input, Text, Stack, Heading, Button} from '@chakra-ui/react';
-import {deepStrictEqual} from 'node:assert';
-import {data} from 'jquery';
+import { Singleton } from './singleton'
 
-interface PokeLanguageType {
+export interface PokeLanguageType {
     language: {
         name: string;
         url: string;
@@ -12,38 +11,14 @@ interface PokeLanguageType {
     name: string;
 }
 
-export const Page2 = ({}) => {
-    const name = '';
-    const min = 0;
-    const max = 1025;
+export const Search = ({}) => {
     const [value, setValue] = React.useState('');
-    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-    const resultArr = value.split('').map((str) => alphabet.indexOf(str) + 1);
+    let jaName:PokeLanguageType 
     const clickEvent = async () => {
-        let pokemonNumber: number = 0;
-        resultArr.forEach((pokemonId: number, index: number) => {
-            pokemonNumber += pokemonId;
-        });
         const promiseArr: Promise<any>[] = [];
-        const seacrhNumber = (): number => {
-            const result = pokemonNumber * Math.floor(Math.random() * 20);
-            if (result === min) {
-                return min + 2;
-            } else if (result >= max) {
-                return max - 1;
-            } else {
-                return result;
-            }
-        };
-        const beforeRand = seacrhNumber() - 1;
-        const afterRand = seacrhNumber() + 1;
-        let url = `https://pokeapi.co/api/v2/pokemon/${pokemonNumber}`;
-        const beforeUrl = `https://pokeapi.co/api/v2/pokemon/${beforeRand}`;
-        const afterUrl = `https://pokeapi.co/api/v2/pokemon/${afterRand}`;
+        let url = `https://pokeapi.co/api/v2/pokemon/${value}`;
 
         promiseArr.push(fetch(url).then((response) => response.json()));
-        promiseArr.push(fetch(beforeUrl).then((response) => response.json()));
-        promiseArr.push(fetch(afterUrl).then((response) => response.json()));
         Promise.all(promiseArr).then(async (result) => {
             await pokePromise(result);
         })
@@ -78,7 +53,7 @@ export const Page2 = ({}) => {
                     img: data.sprites.front_default
                 })
             );
-            if (value.length > 3) {
+            if (value.length <4) {
                 await getJaName(pokemon);
             } else {
                 window.alert('名前を入力してください');
@@ -88,28 +63,19 @@ export const Page2 = ({}) => {
             window.console.log(pokemon[0].img);
             const pokeName = await fetch(pokemon[0].ja.url)
                 .then((response) => response.json());
-            const beforePokeName = await fetch(pokemon[1].ja.url)
-                .then((response) => response.json());
-            const afterPokeName = await fetch(pokemon[2].ja.url)
-                .then((response) => response.json());
-            const jaName = pokeName.names.find((name: PokeLanguageType) => name.language.name === 'ja-Hrkt');
-            const beforeJaName = beforePokeName.names.find((name: PokeLanguageType) => name.language.name === 'ja-Hrkt');
-            const afterJaName = afterPokeName.names.find((name: PokeLanguageType) => name.language.name === 'ja-Hrkt');
+   
+                jaName = pokeName.names.find((name: PokeLanguageType) => name.language.name === 'ja-Hrkt');
             const pokeText = document.getElementById('text') as HTMLElement;
-            const beforePokeText = document.getElementById('beforeText') as HTMLElement;
-            const afterPokeText = document.getElementById('afterText') as HTMLElement;
-            pokeText.innerHTML = `図鑑番号:${pokemonNumber}  ${jaName.name}`;
-            beforePokeText.innerHTML = `図鑑番号:${beforeRand} ${beforeJaName.name}`;
-            afterPokeText.innerHTML = `図鑑番号:${afterRand} ${afterJaName.name}`;
+            pokeText.innerHTML = `図鑑番号:${value}  ${jaName.name}`;
             const pokedex = document.getElementById('img') as HTMLImageElement;
-            const beforePokeImg = document.getElementById('beforeImg') as HTMLImageElement;
-            const afterPokeImg = document.getElementById('afterImg') as HTMLImageElement;
-//            const nextpoke = document.getElementById('nextPoke') as HTMLElement;
             pokedex.src = pokemon[0].img;
-            beforePokeImg.src = pokemon[1].img;
-            afterPokeImg.src = pokemon[2].img;
         };
     };
+    const addFavorite = ()=>{
+        const singleton = Singleton.getInstance();
+        singleton.addItem(jaName);
+        console.log(singleton.getItemList());
+    }
     return (
         <div>
             <Stack spacing={3} width="300px">
@@ -117,7 +83,7 @@ export const Page2 = ({}) => {
                     top="100px"
                     value={value}
                     onChange={e => setValue(e.target.value)}
-                    placeholder="入力欄"
+                    placeholder="好きな数字を入れてね"
                     size="md"
                 />
                 <Button
@@ -125,6 +91,10 @@ export const Page2 = ({}) => {
                     id="complete" color="#61dafb"
                     top="110px" width="100px"
                 >complete</Button>
+                <Button onClick= {addFavorite}
+                id="favorite" color="#61dafb"
+                style={{ marginTop: '120px' }}     
+                >お気に入り</Button>
             </Stack>
         </div>
 

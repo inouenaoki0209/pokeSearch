@@ -26,6 +26,7 @@ export const Page1: React.FC<HamburgerMenuProps> = ({}) => {
         if (fireSwitch) {
             fireSwitch = false;
             const intervalID: NodeJS.Timer = setInterval(() => {
+            window.alert(`${count}カウント後に爆発します`)
                 count--;
                 if (count === 0) {
                     window.alert('爆発！！！！');
@@ -56,7 +57,6 @@ export const Page1: React.FC<HamburgerMenuProps> = ({}) => {
                     </DrawerBody>
                 </DrawerContent>
             </Drawer>
-            <h1>ハンバーガーを作ろう</h1>
         </Box>
     );
 };
