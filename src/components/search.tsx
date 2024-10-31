@@ -1,6 +1,5 @@
-import React, {useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import {Input, Text, Stack, Heading, Button} from '@chakra-ui/react';
+import React from 'react';
+import {Input, Stack, Button} from '@chakra-ui/react';
 import { Singleton } from './singleton'
 
 export interface PokeLanguageType {
@@ -13,7 +12,7 @@ export interface PokeLanguageType {
 
 export const Search = ({}) => {
     const [value, setValue] = React.useState('');
-    let jaName:PokeLanguageType 
+    let jaName:PokeLanguageType
     const clickEvent = async () => {
         const promiseArr: Promise<any>[] = [];
         let url = `https://pokeapi.co/api/v2/pokemon/${value}`;
@@ -63,7 +62,7 @@ export const Search = ({}) => {
             window.console.log(pokemon[0].img);
             const pokeName = await fetch(pokemon[0].ja.url)
                 .then((response) => response.json());
-   
+
                 jaName = pokeName.names.find((name: PokeLanguageType) => name.language.name === 'ja-Hrkt');
             const pokeText = document.getElementById('text') as HTMLElement;
             pokeText.innerHTML = `図鑑番号:${value}  ${jaName.name}`;
@@ -90,10 +89,10 @@ export const Search = ({}) => {
                     onClick={clickEvent}
                     id="complete" color="#61dafb"
                     top="110px" width="100px"
-                >complete</Button>
+                >SEARCH！</Button>
                 <Button onClick= {addFavorite}
                 id="favorite" color="#61dafb"
-                style={{ marginTop: '120px' }}     
+                style={{ marginTop: '120px' }}
                 >お気に入り</Button>
             </Stack>
         </div>
