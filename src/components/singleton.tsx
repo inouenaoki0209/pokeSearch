@@ -1,6 +1,7 @@
 import { PokeLanguageType } from "./search";
 
 export class Singleton {
+  // クラスのインスタンスを管理
   private static instance: Singleton;
   private favoriteItems: PokeLanguageType[] = [];
 
@@ -25,7 +26,7 @@ export class Singleton {
   };
 
   // 登録されているアイテムリストを取得
-  public getItemList() {
+  public getItemList = () => {
     return this.favoriteItems;
-  }
+  };
 }
